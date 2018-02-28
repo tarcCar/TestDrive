@@ -38,11 +38,11 @@ namespace TestDrive.ViewModels
 
         public LoginViewModel()
         {
-            EntrarCommand = new Command(async () =>
+            EntrarCommand = new Command(() =>
             {
                 var loginService = new LoginService();
               
-                await loginService.FazerLogin(new Login(usuario,senha));
+                loginService.FazerLogin(new Login(usuario,senha));
             }, () =>
             {
                 return !string.IsNullOrEmpty(usuario) && !string.IsNullOrEmpty(senha);
