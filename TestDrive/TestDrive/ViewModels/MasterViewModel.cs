@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Input;
+using TestDrive.Media;
 using TestDrive.Models;
 using Xamarin.Forms;
 
@@ -50,6 +51,15 @@ namespace TestDrive.ViewModels
                 OnPropertyChanged();
             }
         }
+        private ImageSource imagemPerfil = "perfil.png";
+
+        public ImageSource ImagemPerfil
+        {
+            get { return imagemPerfil; }
+            private set { imagemPerfil = value; }
+        }
+
+
         private void DefinirComandos(Usuario usuario)
         {
             this.EditarPerfilCommand = new Command(() =>
@@ -66,11 +76,16 @@ namespace TestDrive.ViewModels
             {
                 this.Editando = true;
             });
+            this.TirarFotoCommand = new Command(()=>
+            {
+                DependencyService.Get<ICamera>().TirarFoto();
+            });
         }
 
         public ICommand EditarPerfilCommand { get; set; }
         public ICommand SalvarCommand { get; private set; }
         public ICommand EditarCommand { get; private set; }
+        public ICommand TirarFotoCommand { get; set; }
 
     }
 }
