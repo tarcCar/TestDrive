@@ -12,14 +12,14 @@ using Xamarin.Forms;
 using Android.Content;
 using Android.Provider;
 
-[assembly:Xamarin.Forms.Dependency(typeof(MainActivity))]
+[assembly: Xamarin.Forms.Dependency(typeof(MainActivity))]
 namespace TestDrive.Droid
 {
-	[Activity (Label = "TestDrive", Icon = "@drawable/icon", Theme="@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-	public class MainActivity : 
+    [Activity(Label = "TestDrive", Icon = "@drawable/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    public class MainActivity :
         global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
-        ,ICamera
-	{
+        , ICamera
+    {
         static Java.IO.File arquivoImagem;
         public void TirarFoto()
         {
@@ -34,7 +34,7 @@ namespace TestDrive.Droid
 
         private static Java.IO.File PegaArquivoImagem()
         {
-            
+
             Java.IO.File diretorio = new Java.IO.File(
                 Android.OS.Environment.GetExternalStoragePublicDirectory(
                     Android.OS.Environment.DirectoryPictures), "Imagens"
@@ -46,21 +46,29 @@ namespace TestDrive.Droid
             return arquivoImagem;
         }
 
-        protected override void OnCreate (Bundle bundle)
-		{
-			TabLayoutResource = Resource.Layout.Tabbar;
-			ToolbarResource = Resource.Layout.Toolbar; 
+        protected override void OnCreate(Bundle bundle)
+        {
+            TabLayoutResource = Resource.Layout.Tabbar;
+            ToolbarResource = Resource.Layout.Toolbar;
 
-			base.OnCreate (bundle);
+            base.OnCreate(bundle);
 
-			global::Xamarin.Forms.Forms.Init (this, bundle);
-			LoadApplication (new TestDrive.App ());
-		}
+            global::Xamarin.Forms.Forms.Init(this, bundle);
+            LoadApplication(new TestDrive.App());
+        }
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
         {
             base.OnActivityResult(requestCode, resultCode, data);
-
-            MessagingCenter.Send<Java.IO.File>(arquivoImagem, "TirarFoto");
+            if (resultCode == Result.Ok)
+            {
+                byte[] bytes;
+                using (var stream = new Java.IO.FileInputStream(arquivoImagem))
+                {
+                    bytes = new byte[arquivoImagem.Length()];
+                    stream.Read(bytes);
+                }
+                MessagingCenter.Send<byte[]>(bytes, "TirarFoto");
+            }
         }
     }
 }

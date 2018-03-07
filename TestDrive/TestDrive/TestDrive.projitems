@@ -13,6 +13,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Converters\NegativeConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\ISQLite.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LoginService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Media\ICamera.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Agendamento.cs" />

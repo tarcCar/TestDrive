@@ -4,22 +4,24 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Windows.Input;
+using TestDrive.Data;
 using TestDrive.Models;
 using Xamarin.Forms;
 
 namespace TestDrive.ViewModels
 {
-    public class AgendamentoViewModel:BaseViewModel
+    public class AgendamentoViewModel : BaseViewModel
     {
         private const string URL_POST_VEICULOS = "http://aluracar.herokuapp.com/salvaragendamento";
         public AgendamentoViewModel(Veiculo veiculo)
         {
             this.Agendamento = new Agendamento();
             this.Veiculo = veiculo;
-            AgendarCommand = new Command(()=>
+            AgendarCommand = new Command(() =>
             {
                 MessagingCenter.Send<Agendamento>(this.Agendamento, "Agendamento");
-            },()=> {
+            }, () =>
+            {
                 return !string.IsNullOrEmpty(Nome)
                 && !string.IsNullOrEmpty(Fone)
                 && !string.IsNullOrEmpty(Email);
@@ -94,11 +96,12 @@ namespace TestDrive.ViewModels
             set { Agendamento.HoraAgendamento = value; }
         }
         public ICommand AgendarCommand { get; set; }
-        public  async void SalvarAgendamento()
+        public async void SalvarAgendamento()
         {
 
-            var dataHora = new DateTime(DataAgendamento.Year,DataAgendamento.Month,DataAgendamento.Day,HoraAgendamento.Hours,HoraAgendamento.Minutes,HoraAgendamento.Seconds);
-            var agendamentoJson = JsonConvert.SerializeObject(new {
+            var dataHora = new DateTime(DataAgendamento.Year, DataAgendamento.Month, DataAgendamento.Day, HoraAgendamento.Hours, HoraAgendamento.Minutes, HoraAgendamento.Seconds);
+            var agendamentoJson = JsonConvert.SerializeObject(new
+            {
                 nome = Nome,
                 fone = Fone,
                 email = Email,
@@ -108,9 +111,13 @@ namespace TestDrive.ViewModels
             });
             HttpClient cliente = new HttpClient();
 
-            var content = new StringContent(agendamentoJson,Encoding.UTF8,"application/json");
+            var content = new StringContent(agendamentoJson, Encoding.UTF8, "application/json");
             var resposta = await cliente.PostAsync(URL_POST_VEICULOS, content);
 
+            using (var conexao = DependencyService.Get<ISQLite>().PegarConexao())
+            {
+
+            }
             if (resposta.IsSuccessStatusCode)
             {
                 MessagingCenter.Send<Agendamento>(this.Agendamento, "SucessoAgendamento");

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Windows.Input;
 using TestDrive.Media;
@@ -8,9 +9,9 @@ using Xamarin.Forms;
 
 namespace TestDrive.ViewModels
 {
-    public class MasterViewModel:BaseViewModel
+    public class MasterViewModel : BaseViewModel
     {
-        
+
 
         public string Nome
         {
@@ -18,7 +19,7 @@ namespace TestDrive.ViewModels
             set { usuario.nome = value; }
         }
 
-      
+
         public string Email
         {
             get { return usuario.email; }
@@ -46,7 +47,8 @@ namespace TestDrive.ViewModels
         public bool Editando
         {
             get { return editando; }
-            private set {
+            private set
+            {
                 editando = value;
                 OnPropertyChanged();
             }
@@ -56,7 +58,11 @@ namespace TestDrive.ViewModels
         public ImageSource ImagemPerfil
         {
             get { return imagemPerfil; }
-            private set { imagemPerfil = value; }
+            private set
+            {
+                imagemPerfil = value;
+                OnPropertyChanged();
+            }
         }
 
 
@@ -76,10 +82,17 @@ namespace TestDrive.ViewModels
             {
                 this.Editando = true;
             });
-            this.TirarFotoCommand = new Command(()=>
+            this.TirarFotoCommand = new Command(() =>
             {
                 DependencyService.Get<ICamera>().TirarFoto();
             });
+
+            MessagingCenter.Subscribe<byte[]>(this, "TirarFoto",
+                (bytes) =>
+                {
+                    ImagemPerfil = ImageSource.FromStream(
+                        () => new MemoryStream(bytes));
+                });
         }
 
         public ICommand EditarPerfilCommand { get; set; }
