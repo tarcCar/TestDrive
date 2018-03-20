@@ -13,6 +13,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Converters\NegativeConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\AgendamentoDao.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\ISQLite.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LoginService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Media\ICamera.cs" />
@@ -27,6 +28,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ListagemViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\LoginViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\MasterViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\AgendamentosUsuarioView.xaml.cs">
+      <DependentUpon>AgendamentosUsuarioView.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Views\AgendamentoView.xaml.cs">
       <DependentUpon>AgendamentoView.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -89,6 +94,12 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\MasterView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\AgendamentosUsuarioView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
 </Project>

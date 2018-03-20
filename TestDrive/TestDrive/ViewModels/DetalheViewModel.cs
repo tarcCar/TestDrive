@@ -1,34 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using TestDrive.Models;
+using TestDrive.ViewModels;
 using Xamarin.Forms;
+
 namespace TestDrive.ViewModels
 {
-    public class DetalheViewModel:BaseViewModel
+    public class DetalheViewModel : BaseViewModel
     {
         public Veiculo Veiculo { get; set; }
-        public ICommand ProximoCommand { get; set; }
-        public DetalheViewModel(Veiculo veiculo)
-        {
-            this.Veiculo = veiculo;
 
-            this.ProximoCommand = new Command(
-            ()=> 
-            {
-                MessagingCenter.Send<Veiculo>(veiculo, "Proximo");
-            });
-        }
-        public string TextoFreioAbs
+        public string TextoFreioABS
         {
             get
             {
                 return string.Format("Freio ABS - R$ {0}", Veiculo.FREIO_ABS);
             }
         }
+
         public string TextoArCondicionado
         {
             get
@@ -36,6 +32,7 @@ namespace TestDrive.ViewModels
                 return string.Format("Ar Condicionado - R$ {0}", Veiculo.AR_CONDICIONADO);
             }
         }
+
         public string TextoMP3Player
         {
             get
@@ -44,22 +41,21 @@ namespace TestDrive.ViewModels
             }
         }
 
-
-        public bool TemFreioAbs
+        public bool TemFreioABS
         {
             get
             {
-                return Veiculo.TemFreioAbs;
+                return Veiculo.TemFreioABS;
             }
             set
             {
-                Veiculo.TemFreioAbs = value;
+                Veiculo.TemFreioABS = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(ValorTotal));
             }
         }
 
-        public bool TemArcondicionado
+        public bool TemArCondicionado
         {
             get
             {
@@ -86,6 +82,7 @@ namespace TestDrive.ViewModels
                 OnPropertyChanged(nameof(ValorTotal));
             }
         }
+
         public string ValorTotal
         {
             get
@@ -94,5 +91,15 @@ namespace TestDrive.ViewModels
             }
         }
 
+        public DetalheViewModel(Veiculo veiculo)
+        {
+            this.Veiculo = veiculo;
+            ProximoCommand = new Command(() =>
+            {
+                MessagingCenter.Send(veiculo, "Proximo");
+            });
+        }
+
+        public ICommand ProximoCommand { get; set; }
     }
 }

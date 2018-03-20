@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -18,9 +19,12 @@ namespace TestDrive.Droid
 {
     public class SQLite_android : ISQLite
     {
+        private const string ArquivoDB = "agendamento.db3";
+
         public SQLiteConnection PegarConexao()
         {
-            return new SQLiteConnection("agendamento.db3");
+            var caminhoDB = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.Path, ArquivoDB);
+            return new SQLiteConnection(caminhoDB);
         }
     }
 }

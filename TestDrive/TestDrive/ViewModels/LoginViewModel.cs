@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using TestDrive.Models;
 using Xamarin.Forms;
@@ -11,7 +14,6 @@ namespace TestDrive.ViewModels
     public class LoginViewModel
     {
         private string usuario;
-
         public string Usuario
         {
             get { return usuario; }
@@ -23,7 +25,6 @@ namespace TestDrive.ViewModels
         }
 
         private string senha;
-
         public string Senha
         {
             get { return senha; }
@@ -38,18 +39,15 @@ namespace TestDrive.ViewModels
 
         public LoginViewModel()
         {
-            EntrarCommand = new Command(() =>
+            EntrarCommand = new Command(async () =>
             {
                 var loginService = new LoginService();
-              
-                loginService.FazerLogin(new Login(usuario,senha));
+                await loginService.FazerLogin(new Login(usuario, senha));
             }, () =>
             {
-                return !string.IsNullOrEmpty(usuario) && !string.IsNullOrEmpty(senha);
+                return !string.IsNullOrEmpty(usuario)
+                        && !string.IsNullOrEmpty(senha);
             });
         }
-
-       
     }
 }
-

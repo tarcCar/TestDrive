@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using TestDrive.Media;
 using TestDrive.Models;
@@ -11,21 +13,12 @@ namespace TestDrive.ViewModels
 {
     public class MasterViewModel : BaseViewModel
     {
-
-
         public string Nome
         {
-            get { return usuario.nome; }
-            set { usuario.nome = value; }
+            get { return this.usuario.nome; }
+            set { this.usuario.nome = value; }
         }
 
-
-        public string Email
-        {
-            get { return usuario.email; }
-            set { usuario.email = value; }
-        }
-        private readonly Usuario usuario;
         public string DataNascimento
         {
             get { return this.usuario.dataNascimento; }
@@ -37,12 +30,13 @@ namespace TestDrive.ViewModels
             get { return this.usuario.telefone; }
             set { this.usuario.telefone = value; }
         }
-        public MasterViewModel(Usuario usuario)
-        {
-            this.usuario = usuario;
-            DefinirComandos(usuario);
 
+        public string Email
+        {
+            get { return this.usuario.email; }
+            set { this.usuario.email = value; }
         }
+
         private bool editando = false;
         public bool Editando
         {
@@ -53,52 +47,80 @@ namespace TestDrive.ViewModels
                 OnPropertyChanged();
             }
         }
-        private ImageSource imagemPerfil = "perfil.png";
 
-        public ImageSource ImagemPerfil
+        private ImageSource fotoPerfil = "perfil.png";
+
+        public ImageSource FotoPerfil
         {
-            get { return imagemPerfil; }
+            get { return fotoPerfil; }
             private set
             {
-                imagemPerfil = value;
+                fotoPerfil = value;
                 OnPropertyChanged();
             }
         }
 
 
+        private readonly Usuario usuario;
+
+        public ICommand EditarPerfilCommand { get; private set; }
+        public ICommand SalvarCommand { get; private set; }
+        public ICommand EditarCommand { get; private set; }
+        public ICommand TirarFotoCommand { get; private set; }
+        public ICommand MeusAgendamentosCommand { get; private set; }
+        public ICommand NovoAgendamentoCommand { get; private set; }
+
+        public MasterViewModel(Usuario usuario)
+        {
+            this.usuario = usuario;
+
+            DefinirComandos(usuario);
+
+            AssinarMensagens();
+        }
+
+        private void AssinarMensagens()
+        {
+            MessagingCenter.Subscribe<byte[]>(this, "FotoTirada",
+            (bytes) =>
+            {
+                FotoPerfil = ImageSource.FromStream(
+                    () => new MemoryStream(bytes));
+            });
+        }
+
         private void DefinirComandos(Usuario usuario)
         {
-            this.EditarPerfilCommand = new Command(() =>
+            EditarPerfilCommand = new Command(() =>
             {
-                MessagingCenter.Send<Usuario>(this.usuario, "EditarPerfil");
+                MessagingCenter.Send<Usuario>(usuario, "EditarPerfil");
             });
 
-            this.SalvarCommand = new Command(() =>
+            SalvarCommand = new Command(() =>
             {
                 this.Editando = false;
                 MessagingCenter.Send<Usuario>(usuario, "SucessoSalvarUsuario");
             });
-            this.EditarCommand = new Command(() =>
+
+            EditarCommand = new Command(() =>
             {
                 this.Editando = true;
             });
-            this.TirarFotoCommand = new Command(() =>
+
+            TirarFotoCommand = new Command(() =>
             {
                 DependencyService.Get<ICamera>().TirarFoto();
             });
 
-            MessagingCenter.Subscribe<byte[]>(this, "TirarFoto",
-                (bytes) =>
-                {
-                    ImagemPerfil = ImageSource.FromStream(
-                        () => new MemoryStream(bytes));
-                });
+            MeusAgendamentosCommand = new Command(() =>
+            {
+                MessagingCenter.Send<Usuario>(usuario, "MeusAgendamentos");
+            });
+
+            NovoAgendamentoCommand = new Command(() =>
+            {
+                MessagingCenter.Send<Usuario>(usuario, "NovoAgendamento");
+            });
         }
-
-        public ICommand EditarPerfilCommand { get; set; }
-        public ICommand SalvarCommand { get; private set; }
-        public ICommand EditarCommand { get; private set; }
-        public ICommand TirarFotoCommand { get; set; }
-
     }
 }

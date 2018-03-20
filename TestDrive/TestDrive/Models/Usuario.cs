@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace TestDrive.Models
 {
@@ -11,11 +13,10 @@ namespace TestDrive.Models
         public string email { get; set; }
         public string dataNascimento { get; set; }
         public string telefone { get; set; }
-
     }
+
     public class ResultadoLogin
     {
         public Usuario usuario { get; set; }
-
     }
 }
